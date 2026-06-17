@@ -1,0 +1,11 @@
+/target
+/dist
+/tmp
+/.claude/
+/scripts/_*.ps1
+*.log
+.env
+.bull-doctor/
+/assets/bull-doctor.ico
+/assets/bull-doctor.png
+/assets/codex-helper.ico
