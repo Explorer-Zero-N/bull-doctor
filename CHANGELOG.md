@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1] - 2026-06-19
+
+### Fixed
+
+- 修复本地 Skill 安装在 WebView2 下无效的问题（`File.path` 是 Electron 专有属性，WebView2 不支持）
+- 新增手动输入文件夹路径的文本框，作为本地安装 Skill 的主要方式
+
 ## [0.3.0] - 2026-06-17
 
 ### Changed

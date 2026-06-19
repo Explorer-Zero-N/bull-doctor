@@ -26,7 +26,7 @@ gcp_auth = "0.12"
 
 [package]
 name = "bull-doctor"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 description = "Bull Doctor — 多模型代理 & 上下文压缩，让 Claude Code / Desktop / Hermes / OpenClaw 一键切换国产大模型"
 license = "MIT"
