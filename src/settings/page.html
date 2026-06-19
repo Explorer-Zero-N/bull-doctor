@@ -614,9 +614,12 @@
       </div>
       <div class="field">
         <label class="field-label">从本地文件夹安装</label>
-        <div id="skillDropZone" style="border:2px dashed var(--border);border-radius:var(--radius-sm);padding:20px 16px;text-align:center;cursor:pointer;transition:all 0.2s;background:#fafafa;">
-          <div style="font-size:28px;margin-bottom:6px;">📂</div>
-          <div style="font-size:13px;color:var(--text-secondary);font-weight:500;">拖入文件夹到此处，或点击选择</div>
+        <div style="display:flex;gap:8px;align-items:stretch;">
+          <input id="skillLocalPathInput" class="text-input" type="text" placeholder="粘贴文件夹绝对路径，如 C:\Users\you\my-skill" autocomplete="off" spellcheck="false" style="flex:1;" />
+          <button type="button" id="skillLocalPathApply" class="provider-chip" style="height:40px;border-radius:8px;flex-shrink:0;padding:0 14px;font-size:13px;background:var(--primary);color:#fff;border-color:transparent;">选择</button>
+        </div>
+        <div id="skillDropZone" style="border:2px dashed var(--border);border-radius:var(--radius-sm);padding:12px 16px;text-align:center;cursor:pointer;transition:all 0.2s;background:#fafafa;margin-top:8px;">
+          <div style="font-size:13px;color:var(--text-secondary);font-weight:500;">📂 或点击此处浏览文件夹（仅读取文件夹名，需手动确认路径）</div>
           <div id="skillDropPath" style="font-size:12px;color:var(--accent);margin-top:6px;word-break:break-all;min-height:16px;"></div>
         </div>
         <input type="file" id="skillFolderPicker" webkitdirectory style="display:none;" />
@@ -1272,11 +1275,28 @@
     dropZone.addEventListener('click', () => folderPicker.click());
     folderPicker.addEventListener('change', () => {
       if (folderPicker.files.length > 0) {
-        // webkitRelativePath 的第一段是文件夹名
         const first = folderPicker.files[0];
         if (first.path) {
+          // Electron 环境下可以直接拿到完整路径
           setSkillPath(first.path.substring(0, first.path.lastIndexOf('\\') || first.path.lastIndexOf('/')));
+        } else {
+          // WebView2 没有 .path 属性，从 webkitRelativePath 提取文件夹名
+          const rel = first.webkitRelativePath || '';
+          const folderName = rel.split('/')[0] || '未知文件夹';
+          showStatus('已选择「' + folderName + '」，但浏览器无法获取完整路径，请在上方输入框粘贴文件夹的完整路径后点击「选择」', 'info');
         }
+      }
+    });
+    // 手动输入路径
+    document.getElementById('skillLocalPathApply').addEventListener('click', () => {
+      const p = document.getElementById('skillLocalPathInput').value.trim();
+      if (!p) { showStatus('请输入文件夹路径', 'err'); return; }
+      setSkillPath(p);
+    });
+    document.getElementById('skillLocalPathInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('skillLocalPathApply').click();
       }
     });
 
